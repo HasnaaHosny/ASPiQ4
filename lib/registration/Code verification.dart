@@ -88,23 +88,26 @@ class _CodeVerificationState extends State<CodeVerification> {
     try {
       Map<String, dynamic> result;
       if (widget.isReset) {
-        // Password reset flow
+        // Password reset flow - use verifyOtp
         result = await ApiService.verifyOtp(widget.token, currentOtp);
+        print("[_verifyOtpCode] Password reset verification result: $result");
       } else {
-        // Registration flow
+        // Registration flow - use verifyEmailOtp
         result = await ApiService.verifyEmailOtp(widget.token, currentOtp);
+        print("[_verifyOtpCode] Registration verification result: $result");
       }
+
       if (!mounted) return;
+
       if (result['success']) {
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(result['message'] ?? 'تم التحقق بنجاح.')));
         if (widget.isReset) {
-          // Navigate to NewPasswordScreen with the new token
+          // For password reset, we keep the same token from step 1
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) =>
-                  NewPasswordScreen(token: result['token'] ?? widget.token),
+              builder: (context) => NewPasswordScreen(token: widget.token),
             ),
           );
         } else {
@@ -124,6 +127,7 @@ class _CodeVerificationState extends State<CodeVerification> {
         }
       }
     } catch (e) {
+      print("[_verifyOtpCode] Error during verification: $e");
       _clearOtpFields();
       if (mounted && _focusNodes.isNotEmpty)
         FocusScope.of(context).requestFocus(_focusNodes[0]);
