@@ -15,7 +15,6 @@ dependencies:
   intl: ^0.19.0 # موجود بالفعل، جيد!
 
   video_player: ^2.8.2
-  flutter_local_notifications: ^16.1.0 # أو أحدث إصدار
   font_awesome_flutter: ^10.6.0
   smooth_page_indicator: ^1.1.0
   flutter_native_splash: ^2.3.2
